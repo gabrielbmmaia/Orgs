@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.orgs.R
 import com.example.orgs.ui.modelo.Produtos
 import kotlinx.android.synthetic.main.produto_item.view.*
+import java.math.BigDecimal
 
 class ListaProdutosAdapter(
     //private val context: Context,
@@ -44,7 +45,7 @@ class ListaProdutosAdapter(
             produtoDescricao.text = produtos.descricao
 
             val produtoValor = itemView.valor
-            produtoValor.text = produtos.valor
+            produtoValor.text = produtos.valor.toPlainString()
         }
     }
 }
