@@ -13,17 +13,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/produto_item" />
+        tools:listitem="@layout/produto_item"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
-        android:layout_width="wrap_content"
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/extended_fab"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
+        android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
+        android:contentDescription=""
+        android:text="NOVO PRODUTO"
+        app:backgroundTint="#92BE5E"
+        app:icon="@drawable/ic_action_add"
+        app:iconTintMode="src_in"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_action_add" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
