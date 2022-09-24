@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.orgs.R
@@ -26,6 +27,14 @@ class ListaProdutosActivity : AppCompatActivity(R.layout.activity_lista_produtos
         setContentView(binding.root)
         configuraRecyclerView()
         configuraFab()
+        AlertDialog.Builder(this)
+            .setMessage("Mensagem Teste")
+            .setTitle("Teste de Titulo")
+            .setView(R.layout.forumlario_imagem)
+            .setPositiveButton("Confirmar"){ _,_ ->
+            }
+            .setNegativeButton("Cancelar"){ _,_ ->
+            }
     }
 
     override fun onResume() {
@@ -34,7 +43,7 @@ class ListaProdutosActivity : AppCompatActivity(R.layout.activity_lista_produtos
     }
 
     private fun configuraFab() {
-        val fab = binding.floatingActionButton
+        val fab = binding.extendedFab
         fab.setOnClickListener {
             val intent = Intent(this@ListaProdutosActivity, FormularioProdutoActivity::class.java)
             startActivity(intent)
