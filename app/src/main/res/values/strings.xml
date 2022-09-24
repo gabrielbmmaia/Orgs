@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Orgs</string>
+    <string name="carregar">Carregar</string>
+    <string name="url_da_imagem">Url da Imagem</string>
 </resources>

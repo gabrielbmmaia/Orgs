@@ -35,6 +35,7 @@ class ListaProdutosActivity : AppCompatActivity(R.layout.activity_lista_produtos
             }
             .setNegativeButton("Cancelar"){ _,_ ->
             }
+            .show()
     }
 
     override fun onResume() {
