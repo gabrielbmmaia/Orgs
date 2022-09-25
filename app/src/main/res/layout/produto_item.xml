@@ -31,7 +31,6 @@
                 app:layout_constraintEnd_toStartOf="@+id/titulo"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/produto_1"
                 tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
             <TextView

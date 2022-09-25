@@ -2,13 +2,20 @@ package com.example.orgs.ui.recyclerview.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.icu.text.NumberFormat
+import android.os.Build.VERSION.SDK_INT
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import coil.ImageLoader
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import coil.load
+import com.example.orgs.R
 import com.example.orgs.databinding.ProdutoItemBinding
 import com.example.orgs.ui.modelo.Produtos
-import java.lang.NumberFormatException
+import java.math.BigDecimal
+import java.text.NumberFormat
 import java.util.*
 
 class ListaProdutosAdapter(
@@ -43,17 +50,35 @@ class ListaProdutosAdapter(
         notifyDataSetChanged()
     }
 
-    class ViewHolder(binding: ProdutoItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(private val binding: ProdutoItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         private val produtoTitulo = binding.titulo
         private val produtoDescricao = binding.descricao
         private val produtoValor = binding.valor
+        private val produtoImagem = binding.imageView
 
         fun bind(produtos: Produtos) {
             produtoTitulo.text = produtos.nome
             produtoDescricao.text = produtos.descricao
-            val formatador = java.text.NumberFormat.getCurrencyInstance(Locale("pt", "br"))
-            produtoValor.text = formatador.format(produtos.valor)
+            produtoValor.text = FormataParaMoedaReal(produtos.valor)
+            produtoImagem.load(produtos.imagemUrl){
+                fallback(R.drawable.imagem_padrao)
+                error(R.drawable.imagem_padrao)
+                placeholder(R.drawable.placeholder)
+            }
+
+            val visibilidade = if (produtos.imagemUrl != null) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+            binding.imageView.visibility = visibilidade
+        }
+
+        private fun FormataParaMoedaReal(valor: BigDecimal) : String? {
+            val formatador = NumberFormat.getCurrencyInstance(Locale("pt", "br"))
+            return formatador.format(valor)
         }
     }
 }

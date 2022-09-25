@@ -2,23 +2,19 @@ package com.example.orgs.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.RecyclerView
 import com.example.orgs.R
+import com.example.orgs.databinding.ActivityFormularioProdutoBinding
 import com.example.orgs.databinding.ActivityListaProdutosBinding
-import com.example.orgs.ui.modelo.ProdutosDao
+import com.example.orgs.ui.dao.ProdutosDao
 import com.example.orgs.ui.recyclerview.adapter.ListaProdutosAdapter
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class ListaProdutosActivity : AppCompatActivity(R.layout.activity_lista_produtos) {
 
 
     private val dao = ProdutosDao()
     private val adapter = ListaProdutosAdapter(this, dao.mostrarLista())
-    private val binding by lazy{
+    private val binding by lazy {
         ActivityListaProdutosBinding.inflate(layoutInflater)
     }
 
@@ -27,15 +23,9 @@ class ListaProdutosActivity : AppCompatActivity(R.layout.activity_lista_produtos
         setContentView(binding.root)
         configuraRecyclerView()
         configuraFab()
-        AlertDialog.Builder(this)
-            .setMessage("Mensagem Teste")
-            .setTitle("Teste de Titulo")
-            .setView(R.layout.forumlario_imagem)
-            .setPositiveButton("Confirmar"){ _,_ ->
-            }
-            .setNegativeButton("Cancelar"){ _,_ ->
-            }
-            .show()
+        val bindingFormularioProduto = ActivityFormularioProdutoBinding.inflate(layoutInflater)
+
+
     }
 
     override fun onResume() {

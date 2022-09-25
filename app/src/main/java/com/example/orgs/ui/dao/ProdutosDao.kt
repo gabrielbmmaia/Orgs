@@ -1,5 +1,6 @@
-package com.example.orgs.ui.modelo
+package com.example.orgs.ui.dao
 
+import com.example.orgs.ui.modelo.Produtos
 import java.math.BigDecimal
 
 class ProdutosDao {
@@ -13,7 +14,8 @@ class ProdutosDao {
     }
 
     companion object {
-        private val produtos = mutableListOf<Produtos>(Produtos(
+        private val produtos = mutableListOf<Produtos>(
+            Produtos(
                 nome = "Salada de Frutas",
                 descricao = "Abacaxi, Banana, Mamão",
                 valor = BigDecimal("17.88")
