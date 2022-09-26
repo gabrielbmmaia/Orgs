@@ -13,6 +13,7 @@ import coil.decode.ImageDecoderDecoder
 import coil.load
 import com.example.orgs.R
 import com.example.orgs.databinding.ProdutoItemBinding
+import com.example.orgs.ui.extensions.tryLoadImage
 import com.example.orgs.ui.modelo.Produtos
 import java.math.BigDecimal
 import java.text.NumberFormat
@@ -62,11 +63,7 @@ class ListaProdutosAdapter(
             produtoTitulo.text = produtos.nome
             produtoDescricao.text = produtos.descricao
             produtoValor.text = FormataParaMoedaReal(produtos.valor)
-            produtoImagem.load(produtos.imagemUrl){
-                fallback(R.drawable.imagem_padrao)
-                error(R.drawable.imagem_padrao)
-                placeholder(R.drawable.placeholder)
-            }
+            produtoImagem.tryLoadImage(produtos.imagemUrl)
 
             val visibilidade = if (produtos.imagemUrl != null) {
                 View.VISIBLE
