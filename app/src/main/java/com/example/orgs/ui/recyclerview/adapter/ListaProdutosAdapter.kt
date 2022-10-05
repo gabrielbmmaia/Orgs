@@ -13,6 +13,7 @@ import coil.decode.ImageDecoderDecoder
 import coil.load
 import com.example.orgs.R
 import com.example.orgs.databinding.ProdutoItemBinding
+import com.example.orgs.ui.extensions.formataParaMoedaReal
 import com.example.orgs.ui.extensions.tryLoadImage
 import com.example.orgs.ui.modelo.Produtos
 import java.math.BigDecimal
@@ -62,7 +63,7 @@ class ListaProdutosAdapter(
         fun bind(produtos: Produtos) {
             produtoTitulo.text = produtos.nome
             produtoDescricao.text = produtos.descricao
-            produtoValor.text = FormataParaMoedaReal(produtos.valor)
+            produtoValor.text = produtos.valor.formataParaMoedaReal()
             produtoImagem.tryLoadImage(produtos.imagemUrl)
 
             val visibilidade = if (produtos.imagemUrl != null) {
@@ -71,11 +72,6 @@ class ListaProdutosAdapter(
                 View.GONE
             }
             binding.imageView.visibility = visibilidade
-        }
-
-        private fun FormataParaMoedaReal(valor: BigDecimal) : String? {
-            val formatador = NumberFormat.getCurrencyInstance(Locale("pt", "br"))
-            return formatador.format(valor)
         }
     }
 }
