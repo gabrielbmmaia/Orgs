@@ -11,8 +11,15 @@ import com.example.orgs.ui.extensions.tryLoadImage
 class FormularioImagemDialog (private val context: Context) {
 
 
-    fun mostra (pegarImagem: (url: String) -> Unit){
-        var binding = ForumlarioImagemBinding.inflate(LayoutInflater.from(context))
+    fun mostra (urlImagem: String? = null, pegarImagem: (url: String) -> Unit){
+        var binding = ForumlarioImagemBinding
+            .inflate(LayoutInflater.from(context))
+
+        urlImagem?.let{
+            binding.formularioImagemImageview.tryLoadImage(it)
+            binding.url.setText(it)
+        }
+
         binding.formularioImagemBotaoCarregar.setOnClickListener {
             var url = binding.url.text.toString()
             binding.formularioImagemImageview.tryLoadImage(url)

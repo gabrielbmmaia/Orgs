@@ -2,6 +2,7 @@ package com.example.orgs.ui.activity
 
 import android.os.Bundle
 import android.text.Editable
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import coil.load
@@ -27,9 +28,10 @@ class FormularioProdutoActivity : AppCompatActivity(R.layout.activity_formulario
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         configuraBotaoSalvar()
+        title = "Cadastrar Produto"
         binding.fomularioProdutoImagem.setOnClickListener {
             FormularioImagemDialog(this)
-                .mostra { imagem ->
+                .mostra (url){ imagem ->
                     url = imagem
                     binding.fomularioProdutoImagem.tryLoadImage(url)
                 }
