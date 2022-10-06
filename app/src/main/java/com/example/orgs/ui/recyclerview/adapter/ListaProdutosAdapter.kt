@@ -22,7 +22,8 @@ import java.util.*
 
 class ListaProdutosAdapter(
     private val context: Context,
-    produtos: List<Produtos>
+    produtos: List<Produtos>,
+    var onClickItem: (produtos: Produtos) -> Unit = {}
 ) : RecyclerView.Adapter<ListaProdutosAdapter.ViewHolder>() {
 
     private val produtos = produtos.toMutableList()
@@ -52,8 +53,18 @@ class ListaProdutosAdapter(
         notifyDataSetChanged()
     }
 
-    class ViewHolder(private val binding: ProdutoItemBinding) :
+    inner class ViewHolder(private val binding: ProdutoItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        private lateinit var produto: Produtos
+
+        init{
+            itemView.setOnClickListener{
+                if (::produto.isInitialized){
+                   onClickItem(produto)
+                }
+            }
+        }
 
         private val produtoTitulo = binding.titulo
         private val produtoDescricao = binding.descricao
@@ -61,6 +72,7 @@ class ListaProdutosAdapter(
         private val produtoImagem = binding.imageView
 
         fun bind(produtos: Produtos) {
+            this.produto = produtos
             produtoTitulo.text = produtos.nome
             produtoDescricao.text = produtos.descricao
             produtoValor.text = produtos.valor.formataParaMoedaReal()

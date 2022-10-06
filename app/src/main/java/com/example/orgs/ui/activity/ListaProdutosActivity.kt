@@ -42,5 +42,12 @@ class ListaProdutosActivity : AppCompatActivity(R.layout.activity_lista_produtos
     private fun configuraRecyclerView() {
         val recyclerView = binding.recyclerView
         recyclerView.adapter = adapter
+        adapter.onClickItem = {
+            val intent = Intent(this@ListaProdutosActivity, DetalhesProdutoActivity::class.java)
+                .apply {
+                    putExtra(CHAVE_PRODUTO, it)
+                }
+            startActivity(intent)
+        }
     }
 }
