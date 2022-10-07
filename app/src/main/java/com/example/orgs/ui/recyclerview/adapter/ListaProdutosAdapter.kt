@@ -1,18 +1,27 @@
 package com.example.orgs.ui.recyclerview.adapter
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.PopupMenu
+import androidx.appcompat.widget.Toolbar.OnMenuItemClickListener
 import androidx.recyclerview.widget.RecyclerView
+import com.example.orgs.R
 import com.example.orgs.databinding.ProdutoItemBinding
 import com.example.orgs.ui.extensions.formataParaMoedaReal
 import com.example.orgs.ui.extensions.tryLoadImage
 import com.example.orgs.ui.modelo.Produtos
 
 class ListaProdutosAdapter(
+    private val context: Context,
     produtos: List<Produtos> = emptyList(),
-    var onClickItem: (produtos: Produtos) -> Unit = {}
+    var onClickItem: (produtos: Produtos) -> Unit = {},
+    var quandoClicaEmRemover: (produtos: Produtos) -> Unit = {},
+    var quandoClicaEmEditar: (produtos: Produtos) -> Unit = {}
 ) : RecyclerView.Adapter<ListaProdutosAdapter.ViewHolder>() {
 
     private val produtos = produtos.toMutableList()
@@ -42,15 +51,41 @@ class ListaProdutosAdapter(
     }
 
     inner class ViewHolder(private val binding: ProdutoItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+        RecyclerView.ViewHolder(binding.root), PopupMenu.OnMenuItemClickListener {
 
         private lateinit var produto: Produtos
 
         init {
+            itemView.setOnLongClickListener {
+                showPopup(it)
+                true
+            }
             itemView.setOnClickListener {
                 if (::produto.isInitialized) {
                     onClickItem(produto)
                 }
+            }
+        }
+
+        override fun onMenuItemClick(item: MenuItem?): Boolean {
+            return when (item?.itemId) {
+                R.id.menu_popup_lista_produtos_editar -> {
+                    quandoClicaEmEditar(produto)
+                    true
+                }
+                R.id.menu_popup_lista_produtos_remover -> {
+                    quandoClicaEmRemover(produto)
+                    true
+                }
+                else -> false
+            }
+        }
+
+        fun showPopup(v: View) {
+            PopupMenu(context, v).apply {
+                inflate(R.menu.menu_popup_lista_produtos)
+                setOnMenuItemClickListener(this@ViewHolder)
+                show()
             }
         }
 

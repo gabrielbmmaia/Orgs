@@ -2,15 +2,23 @@ package com.example.orgs.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
+import androidx.appcompat.widget.PopupMenu.OnMenuItemClickListener
+import androidx.core.view.get
 import com.example.orgs.R
 import com.example.orgs.databinding.ActivityListaProdutosBinding
 import com.example.orgs.ui.database.AppDatabase
 import com.example.orgs.ui.recyclerview.adapter.ListaProdutosAdapter
 
-class ListaProdutosActivity : AppCompatActivity(R.layout.activity_lista_produtos) {
+class ListaProdutosActivity : AppCompatActivity(R.layout.activity_lista_produtos){
 
-    private val adapter = ListaProdutosAdapter()
+    private val adapter = ListaProdutosAdapter(this)
     private val binding by lazy {
         ActivityListaProdutosBinding.inflate(layoutInflater)
     }
@@ -46,6 +54,12 @@ class ListaProdutosActivity : AppCompatActivity(R.layout.activity_lista_produtos
                     putExtra(CHAVE_PRODUTO, it)
                 }
             startActivity(intent)
+        }
+        adapter.quandoClicaEmRemover={
+            Log.i("MenuPopup", "onMenuItemClick: Remover")
+        }
+        adapter.quandoClicaEmEditar = {
+            Log.i("MenuPopup", "onMenuItemClick: Editar")
         }
     }
 }
