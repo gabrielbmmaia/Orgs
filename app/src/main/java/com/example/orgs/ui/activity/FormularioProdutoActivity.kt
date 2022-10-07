@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.orgs.R
 import com.example.orgs.databinding.ActivityFormularioProdutoBinding
-import com.example.orgs.ui.dao.ProdutosDao
+import com.example.orgs.ui.database.AppDatabase
 import com.example.orgs.ui.dialog.FormularioImagemDialog
 import com.example.orgs.ui.extensions.tryLoadImage
 import com.example.orgs.ui.modelo.Produtos
@@ -32,6 +32,17 @@ class FormularioProdutoActivity : AppCompatActivity(R.layout.activity_formulario
         }
     }
 
+    private fun configuraBotaoSalvar() {
+
+        val button = binding.buttonSalvar
+        val db = AppDatabase.instance(this)
+        val produtosDao = db.produtosDao()
+        button.setOnClickListener {
+            val novoProduto = criaProduto()
+            produtosDao.adiciona(novoProduto)
+            finish()
+        }
+    }
 
     private fun criaProduto(): Produtos {
 
@@ -50,16 +61,5 @@ class FormularioProdutoActivity : AppCompatActivity(R.layout.activity_formulario
             valor = validacaoValor,
             imagemUrl = url
         )
-    }
-
-    private fun configuraBotaoSalvar() {
-
-        val button = binding.buttonSalvar
-        button.setOnClickListener {
-            val novoProduto = criaProduto()
-            val dao = ProdutosDao()
-            dao.adiciona(novoProduto)
-            finish()
-        }
     }
 }

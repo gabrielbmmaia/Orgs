@@ -1,7 +1,6 @@
 package com.example.orgs.ui.recyclerview.adapter
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +11,7 @@ import com.example.orgs.ui.extensions.tryLoadImage
 import com.example.orgs.ui.modelo.Produtos
 
 class ListaProdutosAdapter(
-    private val context: Context,
-    produtos: List<Produtos>,
+    produtos: List<Produtos> = emptyList(),
     var onClickItem: (produtos: Produtos) -> Unit = {}
 ) : RecyclerView.Adapter<ListaProdutosAdapter.ViewHolder>() {
 
@@ -23,12 +21,11 @@ class ListaProdutosAdapter(
         val binding = ProdutoItemBinding
             .inflate(
                 LayoutInflater
-                    .from(context),
+                    .from(parent.context),
                 parent,
                 false
             )
         return ViewHolder(binding)
-
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -49,10 +46,10 @@ class ListaProdutosAdapter(
 
         private lateinit var produto: Produtos
 
-        init{
-            itemView.setOnClickListener{
-                if (::produto.isInitialized){
-                   onClickItem(produto)
+        init {
+            itemView.setOnClickListener {
+                if (::produto.isInitialized) {
+                    onClickItem(produto)
                 }
             }
         }

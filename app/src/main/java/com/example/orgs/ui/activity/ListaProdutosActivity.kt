@@ -3,18 +3,14 @@ package com.example.orgs.ui.activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.room.Room
 import com.example.orgs.R
 import com.example.orgs.databinding.ActivityListaProdutosBinding
-import com.example.orgs.ui.dao.ProdutosDao
 import com.example.orgs.ui.database.AppDatabase
 import com.example.orgs.ui.recyclerview.adapter.ListaProdutosAdapter
 
 class ListaProdutosActivity : AppCompatActivity(R.layout.activity_lista_produtos) {
 
-
-    private val dao = ProdutosDao()
-    private val adapter = ListaProdutosAdapter(this, dao.mostrarLista())
+    private val adapter = ListaProdutosAdapter()
     private val binding by lazy {
         ActivityListaProdutosBinding.inflate(layoutInflater)
     }
@@ -24,13 +20,13 @@ class ListaProdutosActivity : AppCompatActivity(R.layout.activity_lista_produtos
         setContentView(binding.root)
         configuraRecyclerView()
         configuraFab()
-        criacaoRoomDB()
     }
-
 
     override fun onResume() {
         super.onResume()
-        adapter.atualiza(dao.mostrarLista())
+        val db = AppDatabase.instance(this)
+        val produtosDao = db.produtosDao()
+        adapter.atualiza(produtosDao.mostrarLista())
     }
 
     private fun configuraFab() {
@@ -51,14 +47,5 @@ class ListaProdutosActivity : AppCompatActivity(R.layout.activity_lista_produtos
                 }
             startActivity(intent)
         }
-    }
-
-    private fun criacaoRoomDB() {
-        val db = Room.databaseBuilder(
-            this, // aqui, passamos um contexto que pode ser o da própria activity
-            AppDatabase::class.java,  //aqui, indicamos a referencia de classe que a gnt cirou de database
-            "orgs.db"  //aqui, vai ser o nome do arquivo gerado de banco de dados.
-        ).allowMainThreadQueries()
-            .build().produtosDao()
     }
 }
