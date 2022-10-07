@@ -16,8 +16,8 @@
     </style>
 
     <style name="Theme.Orgs.NoActionBar" parent="Theme.Orgs">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowActionBar">false</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
 </resources>

@@ -20,7 +20,6 @@
             android:name=".ui.activity.DetalhesProdutoActivity"
             android:theme="@style/Theme.Orgs.NoActionBar" />
         <activity android:name="com.example.orgs.ui.activity.FormularioProdutoActivity" />
-
         <activity
             android:name="com.example.orgs.ui.activity.ListaProdutosActivity"
             android:exported="true"

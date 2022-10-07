@@ -1,20 +1,13 @@
 package com.example.orgs.ui.activity
 
 import android.os.Bundle
-import android.text.Editable
-import android.util.Log
-import android.view.View
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import coil.load
 import com.example.orgs.R
 import com.example.orgs.databinding.ActivityFormularioProdutoBinding
-import com.example.orgs.databinding.ForumlarioImagemBinding
-import com.example.orgs.ui.modelo.Produtos
 import com.example.orgs.ui.dao.ProdutosDao
 import com.example.orgs.ui.dialog.FormularioImagemDialog
 import com.example.orgs.ui.extensions.tryLoadImage
-import com.google.android.material.textfield.TextInputEditText
+import com.example.orgs.ui.modelo.Produtos
 import java.math.BigDecimal
 
 class FormularioProdutoActivity : AppCompatActivity(R.layout.activity_formulario_produto) {

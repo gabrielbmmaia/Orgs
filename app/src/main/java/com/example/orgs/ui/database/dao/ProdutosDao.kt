@@ -12,6 +12,6 @@ interface ProdutosDao {
     fun mostrarLista(): List<Produtos>
 
     @Insert
-    fun adiciona(produtos: Produtos)
+    fun adiciona(vararg produtos: Produtos)
 
 }

@@ -2,23 +2,14 @@ package com.example.orgs.ui.recyclerview.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build.VERSION.SDK_INT
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import coil.ImageLoader
-import coil.decode.GifDecoder
-import coil.decode.ImageDecoderDecoder
-import coil.load
-import com.example.orgs.R
 import com.example.orgs.databinding.ProdutoItemBinding
 import com.example.orgs.ui.extensions.formataParaMoedaReal
 import com.example.orgs.ui.extensions.tryLoadImage
 import com.example.orgs.ui.modelo.Produtos
-import java.math.BigDecimal
-import java.text.NumberFormat
-import java.util.*
 
 class ListaProdutosAdapter(
     private val context: Context,

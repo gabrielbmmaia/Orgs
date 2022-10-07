@@ -2,8 +2,6 @@ package com.example.orgs.ui.dialog
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
-import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import com.example.orgs.databinding.ForumlarioImagemBinding
 import com.example.orgs.ui.extensions.tryLoadImage
