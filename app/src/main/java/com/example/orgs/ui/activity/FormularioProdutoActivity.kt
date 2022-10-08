@@ -12,54 +12,80 @@ import java.math.BigDecimal
 
 class FormularioProdutoActivity : AppCompatActivity(R.layout.activity_formulario_produto) {
 
+    private var produtoId = 0L
+    private var url: String? = null
     private val binding by lazy {
         ActivityFormularioProdutoBinding.inflate(layoutInflater)
     }
-
-    private var url: String? = null
+    private val produtosDao by lazy {
+        AppDatabase.instance(this).produtosDao()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        configuraBotaoSalvar()
         title = "Cadastrar Produto"
+        configuraBotaoSalvar()
+        alterarImagem()
+        procurarIdProduto()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        produtosDao.buscaId(produtoId)?.let {
+            title = "Alterando ${it.nome}"
+            preencheCampos(it)
+        }
+    }
+
+    private fun alterarImagem() {
         binding.fomularioProdutoImagem.setOnClickListener {
             FormularioImagemDialog(this)
-                .mostra (url){ imagem ->
+                .mostra(url) { imagem ->
                     url = imagem
                     binding.fomularioProdutoImagem.tryLoadImage(url)
                 }
         }
     }
 
-    private fun configuraBotaoSalvar() {
+    private fun procurarIdProduto() {
+        produtoId = intent.getLongExtra(CHAVE_PRODUTO_ID, 0L)
+    }
 
+    private fun preencheCampos(produtosCarregados: Produtos) {
+        url = produtosCarregados.imagemUrl
+        binding.fomularioProdutoImagem.tryLoadImage(produtosCarregados.imagemUrl)
+        binding.nome.setText(produtosCarregados.nome)
+        binding.descricao.setText(produtosCarregados.descricao)
+        binding.valor.setText(produtosCarregados.valor.toPlainString())
+    }
+
+    private fun configuraBotaoSalvar() {
         val button = binding.buttonSalvar
-        val db = AppDatabase.instance(this)
-        val produtosDao = db.produtosDao()
         button.setOnClickListener {
-            val novoProduto = criaProduto()
-            produtosDao.adiciona(novoProduto)
+            produtosDao.adiciona(criaProduto())
             finish()
         }
     }
 
     private fun criaProduto(): Produtos {
-
         val campoNome = binding.nome.text.toString()
         val campoDescricao = binding.descricao.text.toString()
-        val campoValor = binding.valor.text.toString()
-        val validacaoValor = if (campoValor.isBlank()) {
-            BigDecimal.ZERO
-        } else {
-            BigDecimal(campoValor)
-        }
-
+        val campoValor = validacaoValor(binding.valor.text.toString())
         return Produtos(
+            id = produtoId,
             nome = campoNome,
             descricao = campoDescricao,
-            valor = validacaoValor,
+            valor = campoValor,
             imagemUrl = url
         )
+    }
+
+    private fun validacaoValor(valor: String): BigDecimal {
+        return if (valor.isBlank()) {
+            BigDecimal.ZERO
+        } else {
+            BigDecimal(valor)
+        }
     }
 }

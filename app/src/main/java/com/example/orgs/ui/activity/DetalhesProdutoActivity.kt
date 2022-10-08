@@ -1,5 +1,6 @@
 package com.example.orgs.ui.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -13,9 +14,13 @@ import com.example.orgs.ui.modelo.Produtos
 
 class DetalhesProdutoActivity : AppCompatActivity(R.layout.activity_detalhes_produto) {
 
-    private lateinit var produtos: Produtos
+    private var produtoId: Long = 0L
+    private var produto: Produtos? = null
     private val binding by lazy {
         ActivityDetalhesProdutoBinding.inflate(layoutInflater)
+    }
+    private val produtosDao by lazy {
+        AppDatabase.instance(this).produtosDao()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,41 +29,53 @@ class DetalhesProdutoActivity : AppCompatActivity(R.layout.activity_detalhes_pro
         tryLoadProduct()
     }
 
+    override fun onResume() {
+        super.onResume()
+        buscaProduto()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_detalhes_produto, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (::produtos.isInitialized) {
-            val db = AppDatabase.instance(this)
-            val produtoDao = db.produtosDao()
-            when (item.itemId) {
-                R.id.menu_detalhes_produto_remover -> {
-                    produtoDao.remover(produtos)
-                    finish()
-                }
-                R.id.menu_detalhes_produto_editar -> {
-
-                }
+        when (item.itemId) {
+            R.id.menu_detalhes_produto_remover -> {
+                produto?.let { produtosDao.remover(it) }
+                finish()
+            }
+            R.id.menu_detalhes_produto_editar -> {
+                Intent(this@DetalhesProdutoActivity, FormularioProdutoActivity::class.java)
+                    .apply {
+                        putExtra(CHAVE_PRODUTO_ID, produtoId)
+                        startActivity(this)
+                    }
             }
         }
-            return super.onOptionsItemSelected(item)
+        return super.onOptionsItemSelected(item)
     }
 
-    private fun tryLoadProduct() {
-        intent.getParcelableExtra<Produtos>(CHAVE_PRODUTO)?.let { produtoCarregado ->
-            produtos = produtoCarregado
-            preencherProdutos(produtoCarregado)
+    //------------------------------------- funçoes >
+
+    private fun buscaProduto() {
+        produto = produtosDao.buscaId(produtoId)
+        produto?.let {
+            preencherProdutos(it)
+            title = it.nome
         } ?: finish()
     }
+    
+    private fun tryLoadProduct() {
+        produtoId = intent.getLongExtra(CHAVE_PRODUTO_ID, 0L)
+    }
 
-    private fun preencherProdutos(produtoCarregado: Produtos) {
+    private fun preencherProdutos(produto: Produtos) {
         with(binding) {
-            detalhesProdutoImagemview.tryLoadImage(produtoCarregado.imagemUrl)
-            detalhesProdutoDescricao.text = produtoCarregado.descricao
-            detalhesProdutoTitulo.text = produtoCarregado.nome
-            detalhesProdutoValor.text = produtoCarregado.valor.formataParaMoedaReal()
+            detalhesProdutoImagemview.tryLoadImage(produto.imagemUrl)
+            detalhesProdutoDescricao.text = produto.descricao
+            detalhesProdutoTitulo.text = produto.nome
+            detalhesProdutoValor.text = produto.valor.formataParaMoedaReal()
         }
     }
 }

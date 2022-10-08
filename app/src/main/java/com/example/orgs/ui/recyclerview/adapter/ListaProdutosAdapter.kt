@@ -2,13 +2,11 @@ package com.example.orgs.ui.recyclerview.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
-import androidx.appcompat.widget.Toolbar.OnMenuItemClickListener
 import androidx.recyclerview.widget.RecyclerView
 import com.example.orgs.R
 import com.example.orgs.databinding.ProdutoItemBinding
@@ -43,7 +41,6 @@ class ListaProdutosAdapter(
 
     override fun getItemCount(): Int = produtos.size
 
-    @SuppressLint("NotifyDataSetChanged")
     fun atualiza(produtos: List<Produtos>) {
         this.produtos.clear()
         this.produtos.addAll(produtos)
@@ -57,7 +54,9 @@ class ListaProdutosAdapter(
 
         init {
             itemView.setOnLongClickListener {
-                showPopup(it)
+                if (::produto.isInitialized) {
+                    showPopup(it)
+                }
                 true
             }
             itemView.setOnClickListener {
