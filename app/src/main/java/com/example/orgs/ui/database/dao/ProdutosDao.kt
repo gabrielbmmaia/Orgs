@@ -34,7 +34,4 @@ interface ProdutosDao {
 
     @Query("SELECT * FROM Produtos ORDER BY valor DESC")
     fun ordenaValorDesc() : List<Produtos>
-
-    @Query("SELECT * FROM Produtos ORDER BY RANDOM() LIMIT 10")
-    fun semOrdem() : List<Produtos>
 }

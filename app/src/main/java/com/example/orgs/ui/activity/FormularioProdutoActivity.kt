@@ -8,10 +8,17 @@ import com.example.orgs.ui.database.AppDatabase
 import com.example.orgs.ui.dialog.FormularioImagemDialog
 import com.example.orgs.ui.extensions.tryLoadImage
 import com.example.orgs.ui.modelo.Produtos
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 
 class FormularioProdutoActivity : AppCompatActivity(R.layout.activity_formulario_produto) {
 
+    private val scope = CoroutineScope(IO)
     private var produtoId = 0L
     private var url: String? = null
     private val binding by lazy {
@@ -32,9 +39,13 @@ class FormularioProdutoActivity : AppCompatActivity(R.layout.activity_formulario
 
     override fun onResume() {
         super.onResume()
-        produtosDao.buscaId(produtoId)?.let {
-            title = "Alterando ${it.nome}"
-            preencheCampos(it)
+        scope.launch {
+            produtosDao.buscaId(produtoId)?.let {
+                withContext(Main){
+                    title = "Alterando ${it.nome}"
+                    preencheCampos(it)
+                }
+            }
         }
     }
 
@@ -63,8 +74,10 @@ class FormularioProdutoActivity : AppCompatActivity(R.layout.activity_formulario
     private fun configuraBotaoSalvar() {
         val button = binding.buttonSalvar
         button.setOnClickListener {
-            produtosDao.adiciona(criaProduto())
-            finish()
+            scope.launch {
+                produtosDao.adiciona(criaProduto())
+                finish()
+            }
         }
     }
 

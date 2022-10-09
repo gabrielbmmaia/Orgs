@@ -11,9 +11,16 @@ import com.example.orgs.ui.database.AppDatabase
 import com.example.orgs.ui.extensions.formataParaMoedaReal
 import com.example.orgs.ui.extensions.tryLoadImage
 import com.example.orgs.ui.modelo.Produtos
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DetalhesProdutoActivity : AppCompatActivity(R.layout.activity_detalhes_produto) {
 
+    private var scope = CoroutineScope(IO)
     private var produtoId: Long = 0L
     private var produto: Produtos? = null
     private val binding by lazy {
@@ -42,8 +49,10 @@ class DetalhesProdutoActivity : AppCompatActivity(R.layout.activity_detalhes_pro
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_detalhes_produto_remover -> {
-                produto?.let { produtosDao.remover(it) }
-                finish()
+                scope.launch {
+                    produto?.let { produtosDao.remover(it) }
+                    finish()
+                }
             }
             R.id.menu_detalhes_produto_editar -> {
                 Intent(this@DetalhesProdutoActivity, FormularioProdutoActivity::class.java)
@@ -59,13 +68,17 @@ class DetalhesProdutoActivity : AppCompatActivity(R.layout.activity_detalhes_pro
     //------------------------------------- funçoes >
 
     private fun buscaProduto() {
-        produto = produtosDao.buscaId(produtoId)
-        produto?.let {
-            preencherProdutos(it)
-            title = it.nome
-        } ?: finish()
+        scope.launch {
+            produto = produtosDao.buscaId(produtoId)
+            withContext(Main) {
+                produto?.let {
+                    preencherProdutos(it)
+                    title = it.nome
+                } ?: finish()
+            }
+        }
     }
-    
+
     private fun tryLoadProduct() {
         produtoId = intent.getLongExtra(CHAVE_PRODUTO_ID, 0L)
     }

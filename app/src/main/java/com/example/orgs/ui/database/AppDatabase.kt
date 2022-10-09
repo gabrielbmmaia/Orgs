@@ -27,10 +27,9 @@ abstract class AppDatabase : RoomDatabase() {
                 context, // aqui, passamos um contexto que pode ser o da própria activity
                 AppDatabase::class.java,  //aqui, indicamos a referencia de classe que a gnt cirou de database
                 "orgs.db"  //aqui, vai ser o nome do arquivo gerado de banco de dados.
-            ).allowMainThreadQueries()
-                .build().also {
-                    db = it
-                }
+            ).build().also {
+                db = it
+            }
         }
     }
 }
