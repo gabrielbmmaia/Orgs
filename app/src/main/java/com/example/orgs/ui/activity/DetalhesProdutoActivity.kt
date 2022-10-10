@@ -5,22 +5,17 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.orgs.R
 import com.example.orgs.databinding.ActivityDetalhesProdutoBinding
 import com.example.orgs.ui.database.AppDatabase
 import com.example.orgs.ui.extensions.formataParaMoedaReal
 import com.example.orgs.ui.extensions.tryLoadImage
 import com.example.orgs.ui.modelo.Produtos
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class DetalhesProdutoActivity : AppCompatActivity(R.layout.activity_detalhes_produto) {
 
-    private var scope = CoroutineScope(IO)
     private var produtoId: Long = 0L
     private var produto: Produtos? = null
     private val binding by lazy {
@@ -33,12 +28,8 @@ class DetalhesProdutoActivity : AppCompatActivity(R.layout.activity_detalhes_pro
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        tryLoadProduct()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        buscaProduto()
+        procurarIdProduto()
+        tentarBuscarProduto()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -49,7 +40,7 @@ class DetalhesProdutoActivity : AppCompatActivity(R.layout.activity_detalhes_pro
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_detalhes_produto_remover -> {
-                scope.launch {
+                lifecycleScope.launch {
                     produto?.let { produtosDao.remover(it) }
                     finish()
                 }
@@ -65,22 +56,19 @@ class DetalhesProdutoActivity : AppCompatActivity(R.layout.activity_detalhes_pro
         return super.onOptionsItemSelected(item)
     }
 
-    //------------------------------------- funçoes >
+    private fun procurarIdProduto() {
+        produtoId = intent.getLongExtra(CHAVE_PRODUTO_ID, 0L)
+    }
 
-    private fun buscaProduto() {
-        scope.launch {
-            produto = produtosDao.buscaId(produtoId)
-            withContext(Main) {
-                produto?.let {
+    private fun tentarBuscarProduto() {
+        lifecycleScope.launch {
+            produtosDao.buscaId(produtoId).collect { produtoEncontrado ->
+                produtoEncontrado?.let {
                     preencherProdutos(it)
                     title = it.nome
                 } ?: finish()
             }
         }
-    }
-
-    private fun tryLoadProduct() {
-        produtoId = intent.getLongExtra(CHAVE_PRODUTO_ID, 0L)
     }
 
     private fun preencherProdutos(produto: Produtos) {

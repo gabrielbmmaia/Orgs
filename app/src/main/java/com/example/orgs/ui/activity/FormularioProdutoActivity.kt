@@ -2,23 +2,18 @@ package com.example.orgs.ui.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.orgs.R
 import com.example.orgs.databinding.ActivityFormularioProdutoBinding
 import com.example.orgs.ui.database.AppDatabase
 import com.example.orgs.ui.dialog.FormularioImagemDialog
 import com.example.orgs.ui.extensions.tryLoadImage
 import com.example.orgs.ui.modelo.Produtos
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.math.BigDecimal
 
 class FormularioProdutoActivity : AppCompatActivity(R.layout.activity_formulario_produto) {
 
-    private val scope = CoroutineScope(IO)
     private var produtoId = 0L
     private var url: String? = null
     private val binding by lazy {
@@ -35,13 +30,13 @@ class FormularioProdutoActivity : AppCompatActivity(R.layout.activity_formulario
         configuraBotaoSalvar()
         alterarImagem()
         procurarIdProduto()
+        tentaBuscarProduto()
     }
 
-    override fun onResume() {
-        super.onResume()
-        scope.launch {
-            produtosDao.buscaId(produtoId)?.let {
-                withContext(Main){
+    private fun tentaBuscarProduto() {
+        lifecycleScope.launch {
+            produtosDao.buscaId(produtoId).collect {
+                it?.let {
                     title = "Alterando ${it.nome}"
                     preencheCampos(it)
                 }
@@ -74,8 +69,9 @@ class FormularioProdutoActivity : AppCompatActivity(R.layout.activity_formulario
     private fun configuraBotaoSalvar() {
         val button = binding.buttonSalvar
         button.setOnClickListener {
-            scope.launch {
-                produtosDao.adiciona(criaProduto())
+            val produtoNovo = criaProduto()
+            lifecycleScope.launch {
+                produtosDao.adiciona(produtoNovo)
                 finish()
             }
         }

@@ -1,7 +1,6 @@
 package com.example.orgs.ui.database
 
 import android.content.Context
-import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -18,17 +17,16 @@ abstract class AppDatabase : RoomDatabase() {
 
     companion object {
 
-        @Volatile
-        private lateinit var db: AppDatabase // transformando o db em um singleton para deixar o app mais leve, já q é criada somente uma instancia do db para todo o app
+        @Volatile // serve para caso dois threads acessem o db ao mesmo tempo quando o primeiro cria a instancia do db, o outro já consegue ler a mesma instancia
+        private var db: AppDatabase? = null // criação de um singleton da instancia do DB
 
         fun instance(context: Context): AppDatabase {
-            if (::db.isInitialized) return db
-            return Room.databaseBuilder(
+            return db ?: Room.databaseBuilder( // aqui checamos se o db já foi instancializado
                 context, // aqui, passamos um contexto que pode ser o da própria activity
                 AppDatabase::class.java,  //aqui, indicamos a referencia de classe que a gnt cirou de database
                 "orgs.db"  //aqui, vai ser o nome do arquivo gerado de banco de dados.
             ).build().also {
-                db = it
+                db = it // essa parte é necessaria para instancialização do singleton
             }
         }
     }
