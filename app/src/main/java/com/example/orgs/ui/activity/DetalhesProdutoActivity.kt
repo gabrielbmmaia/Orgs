@@ -12,12 +12,12 @@ import com.example.orgs.ui.database.AppDatabase
 import com.example.orgs.ui.extensions.formataParaMoedaReal
 import com.example.orgs.ui.extensions.tryLoadImage
 import com.example.orgs.ui.modelo.Produtos
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class DetalhesProdutoActivity : AppCompatActivity(R.layout.activity_detalhes_produto) {
 
     private var produtoId: Long = 0L
-    private var produto: Produtos? = null
     private val binding by lazy {
         ActivityDetalhesProdutoBinding.inflate(layoutInflater)
     }
@@ -41,8 +41,10 @@ class DetalhesProdutoActivity : AppCompatActivity(R.layout.activity_detalhes_pro
         when (item.itemId) {
             R.id.menu_detalhes_produto_remover -> {
                 lifecycleScope.launch {
-                    produto?.let { produtosDao.remover(it) }
-                    finish()
+                    produtosDao.buscaId(produtoId).collect {
+                        it?.let { produtosDao.remover(it) }
+                        finish()
+                    }
                 }
             }
             R.id.menu_detalhes_produto_editar -> {

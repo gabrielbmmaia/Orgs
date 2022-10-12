@@ -7,6 +7,8 @@ import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.example.orgs.R
 import com.example.orgs.databinding.ActivityListaProdutosBinding
 import com.example.orgs.ui.database.AppDatabase

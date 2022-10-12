@@ -15,13 +15,12 @@ import com.example.orgs.ui.modelo.Produtos
 
 class ListaProdutosAdapter(
     private val context: Context,
-    produtos: List<Produtos> = emptyList(),
     var onClickItem: (produtos: Produtos) -> Unit = {},
     var quandoClicaEmRemover: (produtos: Produtos) -> Unit = {},
     var quandoClicaEmEditar: (produtos: Produtos) -> Unit = {}
 ) : RecyclerView.Adapter<ListaProdutosAdapter.ViewHolder>() {
 
-    private val produtos = produtos.toMutableList()
+    private val produtos = mutableListOf<Produtos>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ProdutoItemBinding
@@ -53,9 +52,7 @@ class ListaProdutosAdapter(
 
         init {
             itemView.setOnLongClickListener {
-                if (::produto.isInitialized) {
-                    showPopup(it)
-                }
+                showPopup(it)
                 true
             }
             itemView.setOnClickListener {
@@ -87,12 +84,11 @@ class ListaProdutosAdapter(
             }
         }
 
-        private val produtoTitulo = binding.titulo
-        private val produtoDescricao = binding.descricao
-        private val produtoValor = binding.valor
-        private val produtoImagem = binding.imageView
-
         fun bind(produtos: Produtos) {
+            val produtoTitulo = binding.titulo
+            val produtoDescricao = binding.descricao
+            val produtoValor = binding.valor
+            val produtoImagem = binding.imageView
             this.produto = produtos
             produtoTitulo.text = produtos.nome
             produtoDescricao.text = produtos.descricao
