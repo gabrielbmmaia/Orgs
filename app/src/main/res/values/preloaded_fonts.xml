@@ -6,5 +6,6 @@
         <item>@font/montserrat_alternates</item>
         <item>@font/montserrat_alternates_bold</item>
         <item>@font/montserrat_bold</item>
+        <item>@font/montserrat_medium</item>
     </array>
 </resources>
