@@ -7,13 +7,20 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.orgs.ui.database.converter.Converters
 import com.example.orgs.ui.database.dao.ProdutosDao
+import com.example.orgs.ui.database.dao.UsuarioDao
 import com.example.orgs.ui.modelo.Produtos
+import com.example.orgs.ui.modelo.Usuario
 
 
-@Database(entities = [Produtos::class], version = 1, exportSchema = true)
+@Database(
+    entities = [Produtos::class, Usuario::class],
+    version = 2,
+    exportSchema = true
+)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun produtosDao(): ProdutosDao
+    abstract fun usuarioDao(): UsuarioDao
 
     companion object {
 
@@ -25,9 +32,10 @@ abstract class AppDatabase : RoomDatabase() {
                 context, // aqui, passamos um contexto que pode ser o da própria activity
                 AppDatabase::class.java,  //aqui, indicamos a referencia de classe que a gnt cirou de database
                 "orgs.db"  //aqui, vai ser o nome do arquivo gerado de banco de dados.
-            ).build().also {
-                db = it // essa parte é necessaria para instancialização do singleton
-            }
+            ).addMigrations(MIGRATION_1_2)
+                .build().also {
+                    db = it // essa parte é necessaria para instancialização do singleton
+                }
         }
     }
 }

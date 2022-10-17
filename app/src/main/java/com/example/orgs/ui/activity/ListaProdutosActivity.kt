@@ -25,6 +25,9 @@ class ListaProdutosActivity : AppCompatActivity(R.layout.activity_lista_produtos
     private val produtosDao by lazy {
         AppDatabase.instance(this).produtosDao()
     }
+    private val usuarioDao by lazy {
+        AppDatabase.instance(this).usuarioDao()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,9 +124,17 @@ class ListaProdutosActivity : AppCompatActivity(R.layout.activity_lista_produtos
 
     private fun atualizaTela() {
         lifecycleScope.launch {
-            produtosDao.mostrarLista().collect() {
-                adapter.atualiza(it)
+            launch {
+                produtosDao.mostrarLista().collect() {
+                    adapter.atualiza(it)
+                }
             }
+            intent.getStringExtra("CHAVE_USUARIO_ID")?.let { usuarioId ->
+                usuarioDao.buscaId(usuarioId).collect{
+
+                }
+            }
+
         }
     }
 }
