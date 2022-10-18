@@ -4,11 +4,16 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.lifecycle.lifecycleScope
 import com.example.orgs.databinding.ActivityLoginBinding
 import com.example.orgs.ui.activity.FormularioCadastroUsuarioActivity
 import com.example.orgs.ui.activity.ListaProdutosActivity
 import com.example.orgs.ui.database.AppDatabase
+import com.example.orgs.ui.database.preferences.dataStore
+import com.example.orgs.ui.database.preferences.usuarioLogadoPreferences
+import com.example.orgs.ui.extensions.toast
 import com.example.orgs.ui.extensions.vaiPara
 import kotlinx.coroutines.launch
 
@@ -26,23 +31,26 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
         configuraBotaoCadastrar()
         configuraBotaoEntrar()
+
     }
 
     private fun configuraBotaoEntrar() {
         binding.activityLoginBotaoEntrar.setOnClickListener {
             val usuario = binding.activityLoginUsuario.text.toString()
             val senha = binding.activityLoginSenha.text.toString()
-            lifecycleScope.launch {
-                usuarioDao.autentica(usuario, senha)?.let { usuario ->
-                    vaiPara(ListaProdutosActivity::class.java) {
-                        putExtra("CHAVE_USUARIO_ID", usuario.id)
-                    }
-                } ?: Toast.makeText(
-                    this@LoginActivity,
-                    "Usuário não encontrado",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+            autenticaUsuario(usuario, senha)
+        }
+    }
+
+    private fun autenticaUsuario(usuario: String, senha: String) {
+        lifecycleScope.launch {
+            usuarioDao.autentica(usuario, senha)?.let { usuario ->
+                dataStore.edit { preferences ->
+                    preferences[usuarioLogadoPreferences] = usuario.id
+                }
+                vaiPara(ListaProdutosActivity::class.java)
+                finish()
+            } ?: toast("Usuário não encontrado")
         }
     }
 

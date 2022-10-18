@@ -14,7 +14,7 @@ import com.example.orgs.ui.modelo.Usuario
 
 @Database(
     entities = [Produtos::class, Usuario::class],
-    version = 2,
+    version = 3,
     exportSchema = true
 )
 @TypeConverters(Converters::class)
@@ -32,7 +32,10 @@ abstract class AppDatabase : RoomDatabase() {
                 context, // aqui, passamos um contexto que pode ser o da própria activity
                 AppDatabase::class.java,  //aqui, indicamos a referencia de classe que a gnt cirou de database
                 "orgs.db"  //aqui, vai ser o nome do arquivo gerado de banco de dados.
-            ).addMigrations(MIGRATION_1_2)
+            ).addMigrations(
+                MIGRATION_1_2,
+                MIGRATION_2_3
+            )
                 .build().also {
                     db = it // essa parte é necessaria para instancialização do singleton
                 }

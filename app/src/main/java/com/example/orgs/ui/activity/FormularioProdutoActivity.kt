@@ -9,10 +9,13 @@ import com.example.orgs.ui.database.AppDatabase
 import com.example.orgs.ui.dialog.FormularioImagemDialog
 import com.example.orgs.ui.extensions.tryLoadImage
 import com.example.orgs.ui.modelo.Produtos
+import com.example.orgs.ui.modelo.Usuario
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
-class FormularioProdutoActivity : AppCompatActivity(R.layout.activity_formulario_produto) {
+class FormularioProdutoActivity : UsuarioBaseActivity() {
 
     private var produtoId = 0L
     private var url: String? = null
@@ -69,15 +72,16 @@ class FormularioProdutoActivity : AppCompatActivity(R.layout.activity_formulario
     private fun configuraBotaoSalvar() {
         val button = binding.buttonSalvar
         button.setOnClickListener {
-            val produtoNovo = criaProduto()
             lifecycleScope.launch {
-                produtosDao.adiciona(produtoNovo)
-                finish()
+                usuario.firstOrNull()?.let{ usuario -> //lembrando que o usuario é um stateFlow, então podemos suar o value
+                    produtosDao.adiciona(criaProduto(usuario.id))
+                    finish()
+                }
             }
         }
     }
 
-    private fun criaProduto(): Produtos {
+    private fun criaProduto(usuarioId: String): Produtos {
         val campoNome = binding.nome.text.toString()
         val campoDescricao = binding.descricao.text.toString()
         val campoValor = validacaoValor(binding.valor.text.toString())
@@ -86,7 +90,8 @@ class FormularioProdutoActivity : AppCompatActivity(R.layout.activity_formulario
             nome = campoNome,
             descricao = campoDescricao,
             valor = campoValor,
-            imagemUrl = url
+            imagemUrl = url,
+            usuarioId = usuarioId
         )
     }
 

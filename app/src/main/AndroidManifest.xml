@@ -22,19 +22,20 @@
 
         <activity
             android:name="br.com.alura.orgs.ui.activity.LoginActivity"
-            android:exported="true"
-            android:theme="@style/Theme.Orgs.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/Theme.Orgs.NoActionBar" />
 
         <activity android:name=".ui.activity.DetalhesProdutoActivity" />
 
         <activity android:name="com.example.orgs.ui.activity.FormularioProdutoActivity" />
 
-        <activity android:name="com.example.orgs.ui.activity.ListaProdutosActivity" />
+        <activity
+            android:name="com.example.orgs.ui.activity.ListaProdutosActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <meta-data
             android:name="preloaded_fonts"

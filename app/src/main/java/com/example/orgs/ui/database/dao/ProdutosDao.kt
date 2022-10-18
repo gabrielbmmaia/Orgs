@@ -16,6 +16,9 @@ interface ProdutosDao {
     @Delete
     suspend fun remover (vararg produtos: Produtos)
 
+    @Query("SELECT * FROM Produtos WHERE usuarioId = :usuarioId")
+    fun buscaProdutosUsuario(usuarioId: String) : Flow<List<Produtos>>
+
     @Query("SELECT*FROM Produtos WHERE id = :id")
     fun buscaId (vararg id: Long) : Flow<Produtos?>
 

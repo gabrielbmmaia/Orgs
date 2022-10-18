@@ -5,18 +5,16 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView.LayoutManager
 import com.example.orgs.R
 import com.example.orgs.databinding.ActivityListaProdutosBinding
 import com.example.orgs.ui.database.AppDatabase
+import com.example.orgs.ui.extensions.toast
 import com.example.orgs.ui.recyclerview.adapter.ListaProdutosAdapter
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
-class ListaProdutosActivity : AppCompatActivity(R.layout.activity_lista_produtos) {
+class ListaProdutosActivity : UsuarioBaseActivity() {
 
     private val adapter = ListaProdutosAdapter(this)
     private val binding by lazy {
@@ -25,16 +23,15 @@ class ListaProdutosActivity : AppCompatActivity(R.layout.activity_lista_produtos
     private val produtosDao by lazy {
         AppDatabase.instance(this).produtosDao()
     }
-    private val usuarioDao by lazy {
-        AppDatabase.instance(this).usuarioDao()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
         configuraRecyclerView()
         configuraFab()
-        atualizaTela()
+        lifecycleScope.launch {
+            atualizaTela()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -70,11 +67,7 @@ class ListaProdutosActivity : AppCompatActivity(R.layout.activity_lista_produtos
         adapter.quandoClicaEmRemover = {
             lifecycleScope.launch {
                 produtosDao.remover(it)
-                Toast.makeText(
-                    this@ListaProdutosActivity,
-                    "Produto Deletado",
-                    Toast.LENGTH_SHORT
-                ).show()
+                toast("Produto Deletado")
             }
         }
         adapter.quandoClicaEmEditar = {
@@ -88,6 +81,11 @@ class ListaProdutosActivity : AppCompatActivity(R.layout.activity_lista_produtos
 
     private fun configuraMenuOrdenacao(item: MenuItem) {
         when (item.itemId) {
+            R.id.menu_lista_produtos_logout -> {
+                lifecycleScope.launch {
+                    deslogaUsuario()
+                }
+            }
             R.id.menu_lista_produtos_ordenar_nomeAsc -> {
                 lifecycleScope.launch {
                     produtosDao.ordenaNomeAsc().collect() {
@@ -117,24 +115,18 @@ class ListaProdutosActivity : AppCompatActivity(R.layout.activity_lista_produtos
                 }
             }
             R.id.menu_lista_produtos_ordenar_semOrdem -> {
-                atualizaTela()
+                lifecycleScope.launch {
+                    atualizaTela()
+                }
             }
         }
     }
 
-    private fun atualizaTela() {
-        lifecycleScope.launch {
-            launch {
-                produtosDao.mostrarLista().collect() {
-                    adapter.atualiza(it)
-                }
+    private suspend fun atualizaTela() {
+        usuario.filterNotNull().collect { usuario ->
+            produtosDao.buscaProdutosUsuario(usuario.id).collect {
+                adapter.atualiza(it)
             }
-            intent.getStringExtra("CHAVE_USUARIO_ID")?.let { usuarioId ->
-                usuarioDao.buscaId(usuarioId).collect{
-
-                }
-            }
-
         }
     }
 }

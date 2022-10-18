@@ -14,5 +14,6 @@ data class Produtos(
     val nome: String,
     val descricao: String,
     val valor: BigDecimal,
-    val imagemUrl: String? = null
+    val imagemUrl: String? = null,
+    val usuarioId: String? = null // só é null porque produtos antigos não terá esse campo registrado, logo, será nulo
 ): Parcelable
